@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">IAILApp</string>
+    <string name="library">Library</string>
+    <string name="action_back">Back</string>
+    <string name="action_forward">Forward</string>
+    <string name="action_bookmark">Bookmark</string>
+    <string name="search">Search for article, author or publication date</string>
+</resources>

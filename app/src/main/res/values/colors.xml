@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#838383</color>
+    <color name="colorBlack">#000000</color>
+    <color name="text_hint">#B8B8B8</color>
+    <color name="green">#00693A</color>
+    <color name="toggle_switch_light_green">#00AA21</color>
+    <color name="green_light">#279D19</color>
+    <color name="white">#ffffff</color>
+    <color name="grey">#8C8C8C</color>
+
+    <color name="Beige">#FFF5EE</color>
+    <color name="red">#c3ab0000</color>
+    <color name="red_light">#EF292F</color>
+
+    <!--App Color-->
+
+    <color name="tool_bar">#F5F5F5</color>
+    <color name="search_bar">#FAFAFA</color>
+
+
+
+
+</resources>
