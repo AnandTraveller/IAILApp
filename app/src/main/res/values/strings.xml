@@ -4,5 +4,9 @@
     <string name="action_back">Back</string>
     <string name="action_forward">Forward</string>
     <string name="action_bookmark">Bookmark</string>
+    <string name="abt_app">About the App</string>
+    <string name="ok">OK</string>
+    <string name="pers_names">Designed by Felix Chandran \n Developed by Anand S</string>
+    <string name="develop">Developed for non-profit \n purpose only.</string>
     <string name="search">Search for article, author or publication date</string>
 </resources>

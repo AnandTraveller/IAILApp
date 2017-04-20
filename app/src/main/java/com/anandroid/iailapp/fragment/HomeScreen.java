@@ -6,6 +6,7 @@ import android.graphics.PointF;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -67,6 +68,8 @@ public class HomeScreen extends Fragment {
     RecyclerView homescr_recyc_display;
     @BindView(R.id.edt_search)
     EditText edt_searchJ;
+    @BindView(R.id.home_about_img)
+    ImageView home_about_imgJ;
     ArrayList<ListMod> arrayList;
 
     // These tags will be used to cancel the requests
@@ -168,6 +171,17 @@ public class HomeScreen extends Fragment {
 
         // Online json parse
         // makeJsonObjReq();
+
+        home_about_imgJ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DialogFragment newFragment = new AboutDialogFragment();
+                newFragment.show(getFragmentManager(), "dialog");
+
+
+            }
+        });
 
 
     }

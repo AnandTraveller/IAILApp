@@ -109,7 +109,6 @@ public class MainAct extends AppCompatActivity {
     public String jsonStr() {
         String str = "";
 
-
         return str;
     }
 
