@@ -106,4 +106,11 @@ public class MainAct extends AppCompatActivity {
                 .commitAllowingStateLoss();
     }
 
+    public String jsonStr() {
+        String str = "";
+
+
+        return str;
+    }
+
 }

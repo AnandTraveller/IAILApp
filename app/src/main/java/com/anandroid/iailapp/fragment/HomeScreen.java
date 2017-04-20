@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +42,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,7 +65,9 @@ public class HomeScreen extends Fragment {
 
     @BindView(R.id.homescr_recyc_display)
     RecyclerView homescr_recyc_display;
-
+    @BindView(R.id.edt_search)
+    EditText edt_searchJ;
+    ArrayList<ListMod> arrayList;
 
     // These tags will be used to cancel the requests
     private String tag_json_obj = "jobj_req", tag_json_arry = "jarray_req";
@@ -153,7 +160,14 @@ public class HomeScreen extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        makeJsonObjReq();
+                 /* Set Text Watcher listener */
+        edt_searchJ.addTextChangedListener(textSearch);
+        //888
+        // Offile line Json Parse From Assert File
+        offlineJson();
+
+        // Online json parse
+        // makeJsonObjReq();
 
 
     }
@@ -212,7 +226,7 @@ public class HomeScreen extends Fragment {
                             JSONArray jArray = response.getJSONArray("Sheet1");
                             //JSONArray jArray = (JSONArray) response.get("Sheet1");
                             Log.d("JsonArray DATAS", jArray.toString());
-                            ArrayList<ListMod> arrayList = new ArrayList<ListMod>();
+                            arrayList = new ArrayList<ListMod>();
 
                             for (int i = 0; i < jArray.length(); i++) {
 
@@ -296,4 +310,117 @@ public class HomeScreen extends Fragment {
     }
 
 
+    private final TextWatcher textSearch = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            //  textView.setVisibility(View.VISIBLE);
+        }
+
+        public void afterTextChanged(Editable s) {
+            String input = s.toString();
+            if (s.length() > 0) {
+                if (arrayList != null) {
+                    Log.i("Inside 1 ", "Entered --- " + input);
+
+                    ArrayList<ListMod> tempSearch = new ArrayList<>();
+                    for (ListMod list : arrayList) {
+
+                        String temp = list.getTitle() + " | " + list.getYear() + " | " + list.getAuthour();
+                        Log.i("Inside 2 ", "Entered --- " + input + "  ---  " + temp);
+                        Log.i("Inside 2 ", "Entered --- " + input + "  ---2-  " + list.getTitle());
+
+                        if (temp.toLowerCase().contains(input.toLowerCase())) {
+                            Log.i("Inside Search Loop ", "" + list.getTitle() + "   --   " + list.getYear());
+                            tempSearch.add(list);
+                        }
+
+                    }
+                    // Adding Searched Results
+                    listDisplayAdapter.updateList(tempSearch);
+                    homescr_recyc_display.setAdapter(listDisplayAdapter);
+
+                }
+            } else {
+                listDisplayAdapter.updateList(arrayList);
+                homescr_recyc_display.setAdapter(listDisplayAdapter);
+
+            }
+        }
+    };
+
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = getActivity().getAssets().open("list_data_offline.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+
+    public void offlineJson() {
+        String addedValue = "";
+
+        try {
+            JSONObject jsonObject = new JSONObject(loadJSONFromAsset());
+
+            JSONArray jArray = jsonObject.getJSONArray("Sheet1");
+            //JSONArray jArray = (JSONArray) response.get("Sheet1");
+            Log.d("JsonArray DATAS", jArray.toString());
+            arrayList = new ArrayList<ListMod>();
+
+            for (int i = 0; i < jArray.length(); i++) {
+
+                JSONObject jobj = jArray.getJSONObject(i);
+
+                // Passing Values to Model
+                ListMod listMod = new ListMod();
+                listMod.setTitle(jobj.get("title").toString());
+                listMod.setUrl(jobj.get("url").toString());
+                listMod.setAuthour(jobj.get("author").toString());
+                listMod.setYear(jobj.get("year").toString());
+
+                addedValue += listMod.getTitle() + " " + listMod.getYear() + "\n";
+                Log.d("Inside  DATAS", "" + addedValue);
+                Log.d("Inside JsonArray DATAS", "" + jArray.length());
+
+                arrayList.add(listMod);
+            }
+
+
+            listDisplayAdapter = new ListDisplayAdapter(HomeScreen.this, arrayList);
+
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+            homescr_recyc_display.setLayoutManager(layoutManager);
+            homescr_recyc_display.setItemAnimator(new DefaultItemAnimator());
+            homescr_recyc_display.smoothScrollToPosition(0);
+            homescr_recyc_display.setHasFixedSize(true);
+            homescr_recyc_display.setAdapter(listDisplayAdapter);
+                            /*try {
+                                data = getArguments();
+                                if (null != data) {
+                                    hideIndex = data.getInt(FragmentKey.HIDE_INDEX, -1);
+                                    LOGI(TAG, "Hide Index is : " + hideIndex);
+                                }
+
+                            } catch (Exception e) {
+                            }
+*/
+
+            //    msgResponse.setText(addedValue);
+            // msgResponse.setText(response.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
