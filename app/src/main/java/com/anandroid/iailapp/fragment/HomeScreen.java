@@ -166,8 +166,11 @@ public class HomeScreen extends Fragment {
                  /* Set Text Watcher listener */
         edt_searchJ.addTextChangedListener(textSearch);
         //888
+        // Async Task
+        new DownloadWebPageTask().execute();
+
         // Offile line Json Parse From Assert File
-        offlineJson();
+        // offlineJson();
 
         // Online json parse
         // makeJsonObjReq();
@@ -437,4 +440,67 @@ public class HomeScreen extends Fragment {
             e.printStackTrace();
         }
     }
+
+    private class DownloadWebPageTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String addedValue = "";
+
+            try {
+                JSONObject jsonObject = new JSONObject(loadJSONFromAsset());
+
+                JSONArray jArray = jsonObject.getJSONArray("Sheet1");
+                //JSONArray jArray = (JSONArray) response.get("Sheet1");
+                Log.d("JsonArray DATAS", jArray.toString());
+
+                for (int i = 0; i < jArray.length(); i++) {
+
+                    JSONObject jobj = jArray.getJSONObject(i);
+
+                    // Passing Values to Model
+                    ListMod listMod = new ListMod();
+                    listMod.setTitle(jobj.get("title").toString());
+                    listMod.setUrl(jobj.get("url").toString());
+                    listMod.setAuthour(jobj.get("author").toString());
+                    listMod.setYear(jobj.get("year").toString());
+
+                    addedValue += listMod.getTitle() + " " + listMod.getYear() + "\n";
+                    Log.d("Inside  DATAS", "" + addedValue);
+                    Log.d("Inside JsonArray DATAS", "" + jArray.length());
+
+                    arrayList.add(listMod);
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            arrayList = new ArrayList<ListMod>();
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String tt) {
+
+            listDisplayAdapter = new ListDisplayAdapter(HomeScreen.this, arrayList);
+
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+            homescr_recyc_display.setLayoutManager(layoutManager);
+            homescr_recyc_display.setItemAnimator(new DefaultItemAnimator());
+            homescr_recyc_display.smoothScrollToPosition(0);
+            homescr_recyc_display.setHasFixedSize(true);
+            homescr_recyc_display.setAdapter(listDisplayAdapter);
+        }
+    }
+
 }
