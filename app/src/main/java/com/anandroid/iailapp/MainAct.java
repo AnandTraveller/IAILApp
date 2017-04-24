@@ -50,14 +50,13 @@ public class MainAct extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
 
-        Fragment f = getSupportFragmentManager().findFragmentByTag("HomeScreen");
-        Fragment summaryfrag = getSupportFragmentManager().findFragmentByTag("SummaryFrag");
-        if (f instanceof HomeScreen) {//the fragment on which you want to handle your back press
-            Log.i("BACK PRESSED", "BACK PRESSED");
-        } else {
-            //super.onBackPressed();
-        }
+        // super.onBackPressed();
+
     }
 
     public void uiBackPressed() {
@@ -93,9 +92,11 @@ public class MainAct extends AppCompatActivity {
 
     public void addHomeScreenFragment() {
 
-        HomeScreen homeSc = HomeScreen.newInstance(data);
-        homeSc.setEnterTransition(new Slide(Gravity.RIGHT));
+        /*    homeSc.setEnterTransition(new Slide(Gravity.RIGHT));
         homeSc.setExitTransition(new Slide(Gravity.LEFT));
+        * */
+        HomeScreen homeSc = HomeScreen.newInstance(data);
+
         data.putInt(FragmentKey.INDEX, 1);
         data.putString(FROM_TAG, Constants.FROM_TAG);
         getSupportFragmentManager()

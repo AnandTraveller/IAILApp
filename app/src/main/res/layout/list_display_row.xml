@@ -30,11 +30,13 @@
 
         <TextView
             android:id="@+id/row_author_txt"
-            android:layout_width="@dimen/_200sdp"
+            android:layout_width="@dimen/_240sdp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/row_title_txt"
             android:layout_marginTop="@dimen/_4sdp"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
             android:text="Author"
             android:textColor="@color/text_hint"
             android:textSize="@dimen/_12sdp" />
